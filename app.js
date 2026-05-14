@@ -8,9 +8,11 @@ const express=require('express');
 const app=express();
 
 const connectDB=require('./db/connect');
+const authRouter=require('./routes/authRoute');
 const urlRouter=require('./routes/urlRoute');
 
 require('./cron/deleteInactiveURL');
+const authentication=require('./middleware/authenticationMiddleware');
 const notFound=require('./middleware/notFoundMiddleware');
 const errorHandler=require('./middleware/errorHandlerMiddleware');
 
@@ -20,7 +22,7 @@ app.use(cors());
 app.use(
     rateLimiter({
         windowMs:15*60*1000,
-        max:1,
+        max:100,
         message:'Too many requests from this IP'
     })
 );
@@ -28,7 +30,8 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
-app.use('/shorten',urlRouter);
+app.use('/auth',authRouter);
+app.use('/shorten',authentication,urlRouter);
 
 app.use(notFound)
 app.use(errorHandler)

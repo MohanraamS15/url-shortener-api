@@ -11,14 +11,20 @@ const urlCreate=async (req,res)=>{
     const shortCode=nanoid(6);
     const existingUrl=await Url.findOne({
         url:req.body.url
-    })
+    });
 
     if(existingUrl){
-        return res.status(200).json(existingUrl);
+        return res.status(200).json({
+            id:existingUrl._id,
+            url:existingUrl.url,
+            shortCode:existingUrl.shortCode,
+            createdAt:existingUrl.createdAt,
+            updatedAt:existingUrl.updatedAt
+        });
     }
 
     const url=await Url.create({...req.body,shortCode});
-
+    console.log(url);
     const responseData={
         id:url._id,
         url:url.url,
