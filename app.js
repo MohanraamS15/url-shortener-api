@@ -12,7 +12,7 @@ const authRouter=require('./routes/authRoute');
 const urlRouter=require('./routes/urlRoute');
 
 require('./cron/deleteInactiveURL');
-const authentication=require('./middleware/authenticationMiddleware');
+
 const notFound=require('./middleware/notFoundMiddleware');
 const errorHandler=require('./middleware/errorHandlerMiddleware');
 
@@ -31,7 +31,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
 app.use('/auth',authRouter);
-app.use('/shorten',authentication,urlRouter);
+app.use('/shorten',urlRouter);
 
 app.use(notFound)
 app.use(errorHandler)

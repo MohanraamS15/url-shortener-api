@@ -19,9 +19,12 @@ const urlCreate=async (req,res)=>{
             url:existingUrl.url,
             shortCode:existingUrl.shortCode,
             createdAt:existingUrl.createdAt,
-            updatedAt:existingUrl.updatedAt
+            updatedAt:existingUrl.updatedAt,
+            accessCount:existingUrl.accessCount,
+            lastAccessedAt:existingUrl.lastAccessedAt
         });
     }
+
 
     const url=await Url.create({...req.body,shortCode});
     console.log(url);
@@ -30,7 +33,9 @@ const urlCreate=async (req,res)=>{
         url:url.url,
         shortCode:url.shortCode,
         createdAt:url.createdAt,
-        updatedAt:url.updatedAt
+        updatedAt:url.updatedAt,
+        accessCount:url.accessCount,
+        lastAccessedAt:url.lastAccessedAt
     }
 
     res.status(201).json(responseData);
@@ -57,8 +62,9 @@ const urlGet=async (req,res)=>{
         createdAt: url.createdAt,
         updatedAt: url.updatedAt
     }
+    res.redirect(url.url);
 
-    return res.status(200).json(responseData);
+    // return res.status(200).json(responseData);
 
 }
 
