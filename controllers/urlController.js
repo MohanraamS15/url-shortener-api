@@ -3,14 +3,16 @@ const {nanoid}=require('nanoid');
 const {BadRequestError,NotFoundError}=require('../errors');
 
 const urlCreate=async (req,res)=>{
-    
+    const userId=req.user.userId;
+
     if(!req.body.url){
         throw new BadRequestError('Please provide URL');
     }
 
     const shortCode=nanoid(6);
     const existingUrl=await Url.findOne({
-        url:req.body.url
+        url:req.body.url,
+        createdBy:userId
     });
 
     if(existingUrl){
@@ -26,7 +28,7 @@ const urlCreate=async (req,res)=>{
     }
 
 
-    const url=await Url.create({...req.body,shortCode});
+    const url=await Url.create({...req.body,shortCode,createdBy:userId});
     console.log(url);
     const responseData={
         id:url._id,
@@ -35,21 +37,22 @@ const urlCreate=async (req,res)=>{
         createdAt:url.createdAt,
         updatedAt:url.updatedAt,
         accessCount:url.accessCount,
-        lastAccessedAt:url.lastAccessedAt
+        lastAccessedAt:url.lastAccessedAt,
+
     }
 
     res.status(201).json(responseData);
 }
 
 const urlGet=async (req,res)=>{
-    const shortCode=req.params.id;
-
+    const shortCode=req.params.shortcode;
+    
     if(shortCode.length<6){
         throw new BadRequestError('Please provide correct Short URL');
         
     }
     const url=await Url.findOne({
-        shortCode:shortCode
+        shortCode:shortCode,
     })
 
     if(!url){
@@ -67,6 +70,7 @@ const urlGet=async (req,res)=>{
         createdAt: url.createdAt,
         updatedAt: url.updatedAt
     }
+    //if connecting to frontend ,use this
     // res.redirect(url.url);
 
     return res.status(200).json(responseData);
@@ -74,6 +78,7 @@ const urlGet=async (req,res)=>{
 }
 
 const urlGetAll=async (req,res)=>{
+    
     const urls=await Url.find({});
     res.status(200).json({
         data:urls
@@ -82,7 +87,7 @@ const urlGetAll=async (req,res)=>{
 }
 
 const urlUpdate=async (req,res)=>{
-    const shortCode=req.params.id;
+    const shortCode=req.params.shortcode;
 
     if(shortCode.length<6){
         throw new BadRequestError('Please provide correct Short URL');
@@ -117,7 +122,7 @@ const urlUpdate=async (req,res)=>{
 }
 
 const urlDelete=async (req,res)=>{
-    const shortCode=req.params.id;
+    const shortCode=req.params.shortcode;
 
     if(shortCode.length<6){
         throw new BadRequestError('Please provide correct Short URL');
@@ -135,7 +140,7 @@ const urlDelete=async (req,res)=>{
 }
 
 const urlGetStat=async (req,res)=>{
-    const shortCode=req.params.id;
+    const shortCode=req.params.shortcode;
 
     const url=await Url.findOne({
         shortCode:shortCode

@@ -7,10 +7,10 @@ const {urlCreate,urlGet,urlUpdate,urlDelete,urlGetAll,urlGetStat}=require('../co
 
 router.route('/').post(authentication,validateURL,urlCreate);
 router.route('/').get(authentication,adminauthentication,urlGetAll);
-router.route('/:id').get(urlGet);
-router.route('/:id').put(authentication,validateURL,adminauthentication,urlUpdate)
-router.route('/:id').delete(authentication,adminauthentication,urlDelete);
+router.route('/:shortcode').get(urlGet);
+router.route('/:shortcode').put(authentication,validateURL,adminauthentication,urlUpdate)
+router.route('/:shortcode').delete(authentication,adminauthentication,urlDelete);
 
-router.route('/:id/stats').get(urlGetStat);
+router.route('/:shortcode/stats').get(urlGetStat);
 
 module.exports=router;

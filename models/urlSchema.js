@@ -4,7 +4,6 @@ const urlSchema=new mongoose.Schema({
     url:{
         type:String,
         required:[true,'provide the long url'],
-        unique:true
     },
     shortCode:{
         type:String,
@@ -18,6 +17,11 @@ const urlSchema=new mongoose.Schema({
     lastAccessedAt:{
         type:Date,
         default:Date.now
+    },
+    createdBy:{
+        type:mongoose.Types.ObjectId,
+        ref:'User',
+        required:[true,'please provide user']
     }
 },{
     timestamps:true
