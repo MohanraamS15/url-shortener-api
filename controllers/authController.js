@@ -2,8 +2,8 @@
 const User=require('../models/UserSchema')
 const {BadRequestError,UnauthenticatedError,NotFoundError}=require('../errors'); 
 const register=async (req,res)=>{
-
-    const user=await User.create(req.body); 
+    const {email,password,name}=req.body;
+    const user=await User.create({email,password,name,role:"user"}); 
     
     const token = user.createJWT();
 

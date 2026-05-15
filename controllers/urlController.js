@@ -43,12 +43,17 @@ const urlCreate=async (req,res)=>{
 
 const urlGet=async (req,res)=>{
     const shortCode=req.params.id;
+
+    if(shortCode.length<6){
+        throw new BadRequestError('Please provide correct Short URL');
+        
+    }
     const url=await Url.findOne({
         shortCode:shortCode
     })
 
     if(!url){
-        throw new NotFoundError('Please provide URL');
+        throw new NotFoundError(`There is no URL with this short id:${shortCode}`);
     }
 
     url.accessCount+=1
@@ -62,18 +67,28 @@ const urlGet=async (req,res)=>{
         createdAt: url.createdAt,
         updatedAt: url.updatedAt
     }
-    res.redirect(url.url);
+    // res.redirect(url.url);
 
-    // return res.status(200).json(responseData);
+    return res.status(200).json(responseData);
 
 }
 
-const urlGetAll=(req,res)=>{
+const urlGetAll=async (req,res)=>{
+    const urls=await Url.find({});
+    res.status(200).json({
+        data:urls
+    });
     res.send('got all url');
 }
 
 const urlUpdate=async (req,res)=>{
     const shortCode=req.params.id;
+
+    if(shortCode.length<6){
+        throw new BadRequestError('Please provide correct Short URL');
+        
+    }
+    
     const url=await Url.findOneAndUpdate({
         shortCode:shortCode,
         
@@ -103,6 +118,11 @@ const urlUpdate=async (req,res)=>{
 
 const urlDelete=async (req,res)=>{
     const shortCode=req.params.id;
+
+    if(shortCode.length<6){
+        throw new BadRequestError('Please provide correct Short URL');
+        
+    }
 
     const url=await Url.findOneAndDelete({
         shortCode:shortCode

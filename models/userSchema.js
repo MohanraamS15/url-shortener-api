@@ -22,11 +22,16 @@ const UserSchema= new mongoose.Schema({
     password:{
         type:String,
         required:[true,'Please provide Password'],
-        minlength:6,
+        minlength:[6,'Provide the password of minimum length of 6'],
         match: [
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/,
         'Password must contain uppercase, lowercase, number and special character'
         ]
+    },
+    role:{
+        type:String,
+        enum:['admin','user'],
+        default:'user'
     }
 
 });
@@ -41,7 +46,8 @@ UserSchema.pre('save',async function (){
 UserSchema.methods.createJWT=function(){
     return jwt.sign({
         userId:this._id,
-        name:this.name
+        name:this.name,
+        role:this.role
     },
     process.env.JWT_SECRET,
     {
